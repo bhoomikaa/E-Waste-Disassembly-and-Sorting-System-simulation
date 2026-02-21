@@ -23,22 +23,22 @@ A **Safety Module** validates the plan and continuously monitors forces near sen
 ---
 ## Repo Structure
 
-
+```text
 ML Project/
-├── safedisassemble/          ← The brain of the project
-│   ├── models/               ← The AI that makes decisions
-│   │   ├── task_planner/     ← "What should I do?" (Level 1 brain)
-│   │   ├── skill_selector/   ← "How should I do it?" (Level 2 brain)
-│   │   └── motor_policy/     ← "Move my hand exactly like this" (Level 3 brain)
-│   ├── sim/                  ← The virtual world
-│   │   ├── envs/             ← The rules of the world
-│   │   ├── assets/xmls/      ← 3D models of the laptop, robot, table
-│   │   └── device_registry.py ← Database of devices and their parts
-│   ├── data/                 ← How to collect training examples
-│   └── safety/               ← The safety guard
-├── scripts/                  ← Tools to run demos and render videos
-├── configs/                  ← Settings (like difficulty knobs)
-└── tests/                    ← Checks that nothing is broken
+├─ safedisassemble/                 # The brain of the project
+│  ├─ models/                       # The AI that makes decisions
+│  │  ├─ task_planner/              # Level 1: "What should I do?"
+│  │  ├─ skill_selector/            # Level 2: "How should I do it?"
+│  │  └─ motor_policy/              # Level 3: "Move my hand exactly like this"
+│  ├─ sim/                          # The virtual world
+│  │  ├─ envs/                      # The rules of the world (Gymnasium env)
+│  │  └─ assets/xmls/               # 3D MJCF/XML models (devices, robot, table)
+│  ├─ data/                         # Collect/generate training examples
+│  ├─ safety/                       # Safety guard (plan checks + force monitor)
+│  ├─ scripts/                      # Tools to run demos and render videos
+│  ├─ configs/                      # Settings (training/eval knobs)
+│  └─ tests/                        # Checks that nothing is broken
+└─ README.md
 
 ---
 
