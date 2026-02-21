@@ -1,0 +1,357 @@
+<mujoco model="disassembly_arm">
+  <compiler angle="radian" meshdir="../meshes/" />
+
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" />
+
+  <visual>
+    <global offwidth="2560" offheight="1440" />
+  </visual>
+
+  <default>
+    <joint damping="1.0" armature="0.1" />
+    <geom condim="4" friction="1.0 0.005 0.0001" />
+    <motor ctrllimited="true" />
+    <default class="robot">
+      <geom rgba="0.5 0.5 0.5 1" />
+    </default>
+    <default class="finger">
+      <geom rgba="0.3 0.3 0.3 1" friction="2.0 0.01 0.001" />
+    </default>
+    <default class="visual">
+      <geom contype="0" conaffinity="0" group="1" />
+    </default>
+  <default class="device_body">
+      <geom friction="0.8 0.005 0.001" />
+    </default>
+    <default class="screw">
+      <geom friction="0.3 0.001 0.0001" />
+      <joint damping="0.5" />
+    </default>
+    <default class="connector">
+      <geom friction="1.5 0.01 0.001" />
+    </default>
+  </default>
+
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.32 0.33 0.35" rgb2="0.36 0.37 0.39" width="512" height="512" />
+    <texture name="wood_tex" type="2d" builtin="gradient" rgb1="0.55 0.42 0.28" rgb2="0.48 0.36 0.22" width="256" height="256" />
+    <material name="grid_mat" texture="grid" texrepeat="10 10" reflectance="0.04" specular="0.15" shininess="0.3" />
+    <material name="robot_mat" rgba="0.72 0.72 0.74 1" specular="0.6" shininess="0.7" reflectance="0.08" />
+    <material name="workbench_mat" texture="wood_tex" texrepeat="3 2" specular="0.15" shininess="0.2" reflectance="0.03" />
+  <texture name="pcb_tex" type="2d" builtin="checker" rgb1="0.02 0.30 0.05" rgb2="0.01 0.22 0.03" width="128" height="128" />
+    <material name="shell_dark" rgba="0.16 0.16 0.20 1" specular="0.7" shininess="0.85" reflectance="0.12" />
+    <material name="shell_inner" rgba="0.22 0.22 0.26 1" specular="0.3" />
+    <material name="panel_mat" rgba="0.14 0.14 0.18 1" specular="0.6" shininess="0.8" reflectance="0.1" />
+    <material name="pcb_mat" texture="pcb_tex" texrepeat="4 3" specular="0.15" />
+    <material name="batt_mat" rgba="0.06 0.06 0.06 1" specular="0.04" />
+    <material name="batt_label" rgba="0.12 0.12 0.38 1" specular="0.1" />
+    <material name="ram_mat" rgba="0.04 0.42 0.10 1" specular="0.3" shininess="0.4" />
+    <material name="ram_chip" rgba="0.08 0.08 0.10 1" specular="0.5" shininess="0.6" />
+    <material name="ssd_mat" rgba="0.10 0.10 0.16 1" specular="0.4" shininess="0.5" />
+    <material name="screw_mat" rgba="0.75 0.75 0.78 1" specular="0.9" shininess="0.95" reflectance="0.3" />
+    <material name="fan_mat" rgba="0.13 0.13 0.16 1" specular="0.25" />
+    <material name="blade_mat" rgba="0.18 0.18 0.22 1" specular="0.2" />
+    <material name="hs_mat" rgba="0.72 0.45 0.15 1" specular="0.6" shininess="0.7" reflectance="0.2" />
+    <material name="pipe_mat" rgba="0.75 0.50 0.20 1" specular="0.7" shininess="0.8" reflectance="0.25" />
+    <material name="conn_wh" rgba="0.92 0.90 0.85 1" specular="0.3" />
+    <material name="conn_bk" rgba="0.04 0.04 0.04 1" specular="0.2" />
+    <material name="rubber_ft" rgba="0.12 0.12 0.12 1" specular="0.04" />
+    <material name="port_mat" rgba="0.28 0.28 0.32 1" specular="0.4" />
+    <material name="gold_pin" rgba="0.85 0.70 0.15 1" specular="0.7" shininess="0.8" />
+    <material name="label_wh" rgba="0.88 0.88 0.90 1" specular="0.1" />
+    <material name="warn_yel" rgba="0.95 0.85 0.10 1" specular="0.2" />
+    <material name="trace_mat" rgba="0.60 0.52 0.12 1" specular="0.3" />
+  </asset>
+
+  <worldbody>
+    
+    <geom name="floor" type="plane" size="1.5 1.5 0.01" material="grid_mat" />
+
+    
+    <body name="workbench" pos="0.5 0 0.4">
+      <geom name="table_top" type="box" size="0.4 0.3 0.02" material="workbench_mat" mass="50" contype="1" conaffinity="1" />
+      <geom name="leg1" type="cylinder" size="0.03 0.2" pos="-0.35 -0.25 -0.22" material="workbench_mat" mass="5" />
+      <geom name="leg2" type="cylinder" size="0.03 0.2" pos="0.35 -0.25 -0.22" material="workbench_mat" mass="5" />
+      <geom name="leg3" type="cylinder" size="0.03 0.2" pos="-0.35 0.25 -0.22" material="workbench_mat" mass="5" />
+      <geom name="leg4" type="cylinder" size="0.03 0.2" pos="0.35 0.25 -0.22" material="workbench_mat" mass="5" />
+    </body>
+
+    
+    <body name="base_link" pos="0 0 0.42" childclass="robot">
+      <geom type="cylinder" size="0.06 0.05" mass="2" />
+      <body name="link1" pos="0 0 0.05">
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+        <geom type="capsule" fromto="0 0 0 0 0 0.15" size="0.05" mass="3" />
+        <body name="link2" pos="0 0 0.15">
+          <joint name="joint2" type="hinge" axis="0 1 0" range="-1.7628 1.7628" />
+          <geom type="capsule" fromto="0 0 0 0 0 0.15" size="0.045" mass="2.5" />
+          <body name="link3" pos="0 0 0.15">
+            <joint name="joint3" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+            <geom type="capsule" fromto="0 0 0 0 0 0.12" size="0.04" mass="2" />
+            <body name="link4" pos="0 0 0.12">
+              <joint name="joint4" type="hinge" axis="0 -1 0" range="-3.0718 -0.0698" />
+              <geom type="capsule" fromto="0 0 0 0 0 0.12" size="0.035" mass="1.5" />
+              <body name="link5" pos="0 0 0.12">
+                <joint name="joint5" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+                <geom type="capsule" fromto="0 0 0 0 0 0.1" size="0.03" mass="1.2" />
+                <body name="link6" pos="0 0 0.1">
+                  <joint name="joint6" type="hinge" axis="0 1 0" range="-0.0175 3.7525" />
+                  <geom type="capsule" fromto="0 0 0 0 0 0.08" size="0.028" mass="1" />
+                  <body name="link7" pos="0 0 0.08">
+                    <joint name="joint7" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+                    <geom type="cylinder" size="0.04 0.01" mass="0.5" />
+
+                    
+                    <body name="gripper_base" pos="0 0 0.02">
+                      <geom type="box" size="0.03 0.04 0.01" mass="0.3" />
+
+                      
+                      <body name="left_finger" pos="0 -0.02 0.02" childclass="finger">
+                        <joint name="finger_left" type="slide" axis="0 1 0" range="0 0.04" damping="10" stiffness="5" />
+                        <geom type="box" size="0.015 0.005 0.03" mass="0.05" />
+                        <geom name="left_fingertip" type="box" size="0.01 0.003 0.01" pos="0 0 0.04" mass="0.02" />
+                      </body>
+
+                      
+                      <body name="right_finger" pos="0 0.02 0.02" childclass="finger">
+                        <joint name="finger_right" type="slide" axis="0 -1 0" range="0 0.04" damping="10" stiffness="5" />
+                        <geom type="box" size="0.015 0.005 0.03" mass="0.05" />
+                        <geom name="right_fingertip" type="box" size="0.01 0.003 0.01" pos="0 0 0.04" mass="0.02" />
+                      </body>
+
+                      
+                      <site name="wrist_cam" pos="0 0 -0.01" euler="0 3.14159 0" type="box" size="0.01 0.01 0.01" rgba="0 0 1 0.3" />
+
+                      
+                      <site name="ee_site" pos="0 0 0.06" type="sphere" size="0.005" rgba="1 0 0 0.5" />
+
+                      
+                      <site name="ft_sensor" pos="0 0 0" type="sphere" size="0.003" rgba="0 1 0 0.3" />
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    
+    <body name="overhead_cam_mount" pos="0.5 0 1.2">
+      <site name="overhead_cam" type="box" size="0.02 0.02 0.02" rgba="0 0 1 0.3" />
+    </body>
+
+    
+    
+    <light name="key_light" pos="0.5 -0.3 1.4" dir="0 0.15 -1" diffuse="0.9 0.85 0.8" specular="0.5 0.5 0.5" cutoff="55" />
+    
+    <light name="fill_light" pos="-0.3 0.5 1.0" dir="0.3 -0.2 -0.8" diffuse="0.35 0.38 0.42" specular="0.1 0.1 0.1" cutoff="80" />
+    
+    <light name="rim_light" pos="0.5 0.5 1.3" dir="0 -0.4 -0.8" diffuse="0.25 0.25 0.3" specular="0.2 0.2 0.2" cutoff="70" />
+    
+    <light name="ambient" pos="0 0 2" diffuse="0.18 0.18 0.20" directional="true" />
+  <body name="laptop_base" pos="0.5 0 0.44">
+
+      
+      <geom name="chassis_bottom" type="box" size="0.17 0.12 0.004" material="shell_dark" mass="0.5" />
+      
+      <geom name="rim_f" type="box" size="0.17 0.003 0.007" pos="0 -0.117 0.003" material="shell_dark" mass="0.02" />
+      <geom name="rim_b" type="box" size="0.17 0.003 0.007" pos="0 0.117 0.003" material="shell_dark" mass="0.02" />
+      <geom name="rim_l" type="box" size="0.003 0.12 0.007" pos="-0.167 0 0.003" material="shell_dark" mass="0.02" />
+      <geom name="rim_r" type="box" size="0.003 0.12 0.007" pos="0.167 0 0.003" material="shell_dark" mass="0.02" />
+      
+      <geom name="foot_fl" type="cylinder" size="0.006 0.002" pos="-0.14 -0.10 -0.006" material="rubber_ft" mass="0.005" />
+      <geom name="foot_fr" type="cylinder" size="0.006 0.002" pos="0.14 -0.10 -0.006" material="rubber_ft" mass="0.005" />
+      <geom name="foot_bl" type="cylinder" size="0.006 0.002" pos="-0.14 0.10 -0.006" material="rubber_ft" mass="0.005" />
+      <geom name="foot_br" type="cylinder" size="0.006 0.002" pos="0.14 0.10 -0.006" material="rubber_ft" mass="0.005" />
+      
+      <geom name="usb1" type="box" size="0.006 0.003 0.003" pos="-0.170 -0.05 0.001" material="port_mat" mass="0.001" contype="0" conaffinity="0" />
+      <geom name="usb2" type="box" size="0.006 0.003 0.003" pos="-0.170 -0.02 0.001" material="port_mat" mass="0.001" contype="0" conaffinity="0" />
+      <geom name="hdmi" type="box" size="0.008 0.003 0.002" pos="-0.170 0.04 0.001" material="port_mat" mass="0.001" contype="0" conaffinity="0" />
+      <geom name="usbc" type="box" size="0.005 0.002 0.002" pos="0.170 -0.04 0.001" material="port_mat" mass="0.001" contype="0" conaffinity="0" />
+      
+      <geom name="prod_label" type="box" size="0.04 0.02 0.0005" pos="0.06 0.06 -0.005" material="label_wh" mass="0.001" contype="0" conaffinity="0" />
+
+      
+      <body name="back_panel" pos="0 0 0.005">
+        <joint name="panel_slide_z" type="slide" axis="0 0 1" range="0 0.25" stiffness="500" damping="50" />
+        <geom name="back_panel_geom" type="box" size="0.165 0.115 0.002" material="panel_mat" mass="0.12" />
+        
+        <geom name="vent1" type="box" size="0.03 0.001 0.0025" pos="-0.08 0.058 0.002" material="shell_inner" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="vent2" type="box" size="0.03 0.001 0.0025" pos="-0.08 0.053 0.002" material="shell_inner" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="vent3" type="box" size="0.03 0.001 0.0025" pos="-0.08 0.048 0.002" material="shell_inner" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="vent4" type="box" size="0.03 0.001 0.0025" pos="-0.08 0.043 0.002" material="shell_inner" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="vent5" type="box" size="0.03 0.001 0.0025" pos="-0.08 0.038 0.002" material="shell_inner" mass="0.001" contype="0" conaffinity="0" />
+
+        
+        <body name="screw_1" pos="-0.14 -0.09 0.002" childclass="screw">
+          <joint name="screw_1_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="screw_1_slide" type="slide" axis="0 0 1" range="0 0.06" stiffness="100" damping="5" />
+          <geom name="screw_1_head" type="cylinder" size="0.0035 0.0015" material="screw_mat" mass="0.002" />
+          <geom name="s1xa" type="box" size="0.002 0.0004 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="s1xb" type="box" size="0.0004 0.002 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="screw_1_shaft" type="cylinder" size="0.0012 0.005" pos="0 0 -0.004" material="screw_mat" mass="0.001" />
+          <site name="screw_1_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+        <body name="screw_2" pos="0.14 -0.09 0.002" childclass="screw">
+          <joint name="screw_2_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="screw_2_slide" type="slide" axis="0 0 1" range="0 0.06" stiffness="100" damping="5" />
+          <geom name="screw_2_head" type="cylinder" size="0.0035 0.0015" material="screw_mat" mass="0.002" />
+          <geom name="s2xa" type="box" size="0.002 0.0004 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="s2xb" type="box" size="0.0004 0.002 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="screw_2_shaft" type="cylinder" size="0.0012 0.005" pos="0 0 -0.004" material="screw_mat" mass="0.001" />
+          <site name="screw_2_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+        <body name="screw_3" pos="-0.14 0.09 0.002" childclass="screw">
+          <joint name="screw_3_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="screw_3_slide" type="slide" axis="0 0 1" range="0 0.06" stiffness="100" damping="5" />
+          <geom name="screw_3_head" type="cylinder" size="0.0035 0.0015" material="screw_mat" mass="0.002" />
+          <geom name="s3xa" type="box" size="0.002 0.0004 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="s3xb" type="box" size="0.0004 0.002 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="screw_3_shaft" type="cylinder" size="0.0012 0.005" pos="0 0 -0.004" material="screw_mat" mass="0.001" />
+          <site name="screw_3_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+        <body name="screw_4" pos="0.14 0.09 0.002" childclass="screw">
+          <joint name="screw_4_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="screw_4_slide" type="slide" axis="0 0 1" range="0 0.06" stiffness="100" damping="5" />
+          <geom name="screw_4_head" type="cylinder" size="0.0035 0.0015" material="screw_mat" mass="0.002" />
+          <geom name="s4xa" type="box" size="0.002 0.0004 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="s4xb" type="box" size="0.0004 0.002 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="screw_4_shaft" type="cylinder" size="0.0012 0.005" pos="0 0 -0.004" material="screw_mat" mass="0.001" />
+          <site name="screw_4_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+        <body name="screw_5" pos="0 0 0.002" childclass="screw">
+          <joint name="screw_5_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="screw_5_slide" type="slide" axis="0 0 1" range="0 0.06" stiffness="100" damping="5" />
+          <geom name="screw_5_head" type="cylinder" size="0.0035 0.0015" material="screw_mat" mass="0.002" />
+          <geom name="s5xa" type="box" size="0.002 0.0004 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="s5xb" type="box" size="0.0004 0.002 0.0005" pos="0 0 0.002" material="shell_inner" mass="0.0001" contype="0" conaffinity="0" />
+          <geom name="screw_5_shaft" type="cylinder" size="0.0012 0.005" pos="0 0 -0.004" material="screw_mat" mass="0.001" />
+          <site name="screw_5_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+      </body>
+
+      
+      <body name="motherboard" pos="0.02 0 -0.003">
+        <geom name="pcb_main" type="box" size="0.13 0.09 0.0008" material="pcb_mat" mass="0.12" />
+        <geom name="cpu_die" type="box" size="0.015 0.015 0.002" pos="-0.04 0.02 0.002" rgba="0.11 0.11 0.14 1" mass="0.02" contype="0" conaffinity="0" />
+        <geom name="gpu_die" type="box" size="0.012 0.012 0.0015" pos="-0.04 -0.03 0.002" rgba="0.09 0.09 0.12 1" mass="0.015" contype="0" conaffinity="0" />
+        <geom name="pch" type="box" size="0.008 0.008 0.001" pos="0.04 0.02 0.002" rgba="0.13 0.13 0.16 1" mass="0.008" contype="0" conaffinity="0" />
+        
+        <geom name="tr1" type="box" size="0.0003 0.04 0.0002" pos="0.02 -0.01 0.001" material="trace_mat" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="tr2" type="box" size="0.04 0.0003 0.0002" pos="-0.01 0.00 0.001" material="trace_mat" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="tr3" type="box" size="0.0003 0.03 0.0002" pos="0.06 0.02 0.001" material="trace_mat" mass="0.0001" contype="0" conaffinity="0" />
+        
+        <geom name="smd1" type="box" size="0.02 0.001 0.0005" pos="0.06 -0.04 0.001" rgba="0.08 0.08 0.08 1" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="smd2" type="box" size="0.015 0.001 0.0005" pos="0.06 -0.035 0.001" rgba="0.08 0.08 0.08 1" mass="0.001" contype="0" conaffinity="0" />
+        <site name="pcb_center" pos="0 0 0" type="sphere" size="0.003" rgba="0 0 0 0" />
+        <site name="pcb_stress_zone" pos="0 0 0.001" type="box" size="0.13 0.09 0.001" rgba="0 0 0 0" />
+      </body>
+
+      
+      <body name="battery" pos="-0.06 0 -0.001">
+        <joint name="battery_connector" type="slide" axis="1 0 0" range="0 0.15" stiffness="200" damping="20" />
+        <geom name="battery_cell" type="box" size="0.058 0.038 0.004" material="batt_mat" mass="0.25" />
+        <geom name="batt_lbl" type="box" size="0.04 0.025 0.0005" pos="0 0 0.0045" material="batt_label" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="batt_warn" type="box" size="0.005 0.005 0.0005" pos="0.03 0.02 0.0046" material="warn_yel" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="batt_tab_l" type="box" size="0.003 0.01 0.002" pos="-0.058 0 0" material="batt_mat" mass="0.002" />
+        <geom name="batt_tab_r" type="box" size="0.003 0.01 0.002" pos="0.058 0 0" material="batt_mat" mass="0.002" />
+        <site name="battery_puncture_zone" pos="0 0 0" type="box" size="0.058 0.038 0.004" rgba="0 0 0 0" />
+        <body name="battery_plug" pos="0.06 0 0.002">
+          <geom name="batt_ribbon" type="box" size="0.012 0.004 0.001" material="conn_wh" mass="0.005" />
+          <geom name="batt_plug_tip" type="box" size="0.005 0.006 0.002" pos="0.012 0 0" material="conn_bk" mass="0.003" />
+          <site name="battery_connector_site" pos="0.012 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+      </body>
+
+      
+      <body name="ram_module" pos="0.10 0.04 -0.001">
+        <joint name="ram_slot" type="slide" axis="0 0 1" range="0 0.08" stiffness="150" damping="10" />
+        <joint name="ram_latch" type="hinge" axis="1 0 0" range="0 0.5" stiffness="3" damping="0.5" />
+        <geom name="ram_pcb" type="box" size="0.033 0.013 0.0005" material="ram_mat" mass="0.008" />
+        <geom name="rc1" type="box" size="0.005 0.004 0.001" pos="-0.022 0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc2" type="box" size="0.005 0.004 0.001" pos="-0.011 0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc3" type="box" size="0.005 0.004 0.001" pos="0.000 0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc4" type="box" size="0.005 0.004 0.001" pos="0.011 0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc5" type="box" size="0.005 0.004 0.001" pos="-0.022 -0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc6" type="box" size="0.005 0.004 0.001" pos="-0.011 -0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc7" type="box" size="0.005 0.004 0.001" pos="0.000 -0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="rc8" type="box" size="0.005 0.004 0.001" pos="0.011 -0.005 0.0015" material="ram_chip" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="ram_label" type="box" size="0.015 0.005 0.0003" pos="0.012 0 0.002" material="label_wh" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="ram_pins" type="box" size="0.030 0.001 0.0003" pos="0 -0.013 -0.0005" material="gold_pin" mass="0.001" contype="0" conaffinity="0" />
+        <site name="ram_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+      </body>
+
+      
+      <body name="ssd_module" pos="0.10 -0.04 -0.001">
+        <joint name="ssd_slot" type="slide" axis="1 0 0" range="0 0.10" stiffness="100" damping="8" />
+        <geom name="ssd_pcb" type="box" size="0.033 0.011 0.0005" material="ssd_mat" mass="0.01" />
+        <geom name="nand" type="box" size="0.008 0.008 0.001" pos="-0.010 0 0.0015" rgba="0.08 0.08 0.10 1" mass="0.005" contype="0" conaffinity="0" />
+        <geom name="ssd_ctrl" type="box" size="0.005 0.005 0.0008" pos="0.015 0 0.0013" rgba="0.10 0.10 0.13 1" mass="0.003" contype="0" conaffinity="0" />
+        <geom name="ssd_lbl" type="box" size="0.020 0.008 0.0003" pos="0 0 0.002" rgba="0.05 0.20 0.05 1" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="ssd_edge" type="box" size="0.001 0.010 0.0005" pos="0.034 0 0" material="gold_pin" mass="0.001" contype="0" conaffinity="0" />
+        <site name="ssd_site" pos="0 0 0.003" type="sphere" size="0.004" rgba="0 0 0 0" />
+        <body name="ssd_screw" pos="-0.030 0 0.002" childclass="screw">
+          <joint name="ssd_screw_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="1.5" damping="0.2" />
+          <geom name="ssd_screw_head" type="cylinder" size="0.0025 0.001" material="screw_mat" mass="0.001" />
+          <site name="ssd_screw_site" pos="0 0 0.002" type="sphere" size="0.003" rgba="0 0 0 0" />
+        </body>
+      </body>
+
+      
+      <body name="fan_assembly" pos="-0.08 0.05 -0.001">
+        <joint name="fan_mount" type="slide" axis="0 0 1" range="0 0.10" stiffness="80" damping="5" />
+        <geom name="fan_base" type="cylinder" size="0.022 0.005" material="fan_mat" mass="0.03" />
+        <geom name="fan_hub" type="cylinder" size="0.006 0.003" pos="0 0 0.005" rgba="0.22 0.22 0.28 1" mass="0.005" contype="0" conaffinity="0" />
+        <geom name="bl1" type="box" size="0.015 0.003 0.001" pos="0 0 0.006" material="blade_mat" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="bl2" type="box" size="0.003 0.015 0.001" pos="0 0 0.006" material="blade_mat" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="bl3" type="box" size="0.012 0.012 0.001" pos="0 0 0.006" euler="0 0 0.785" material="blade_mat" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="fan_conn" type="box" size="0.004 0.002 0.002" pos="0.022 0.01 0.003" material="conn_wh" mass="0.001" />
+        <site name="fan_site" pos="0 0 0.007" type="sphere" size="0.004" rgba="0 0 0 0" />
+      </body>
+
+      
+      <body name="heatsink" pos="-0.04 0.02 -0.001">
+        <geom name="hs_base" type="box" size="0.018 0.018 0.002" material="hs_mat" mass="0.04" />
+        <geom name="hpipe" type="capsule" fromto="0 0 0.003 -0.04 0.03 0.003" size="0.003" material="pipe_mat" mass="0.01" contype="0" conaffinity="0" />
+        <geom name="fin1" type="box" size="0.015 0.001 0.006" pos="0 -0.012 0.006" material="hs_mat" mass="0.003" contype="0" conaffinity="0" />
+        <geom name="fin2" type="box" size="0.015 0.001 0.006" pos="0 -0.006 0.006" material="hs_mat" mass="0.003" contype="0" conaffinity="0" />
+        <geom name="fin3" type="box" size="0.015 0.001 0.006" pos="0 0.000 0.006" material="hs_mat" mass="0.003" contype="0" conaffinity="0" />
+        <geom name="fin4" type="box" size="0.015 0.001 0.006" pos="0 0.006 0.006" material="hs_mat" mass="0.003" contype="0" conaffinity="0" />
+        <geom name="fin5" type="box" size="0.015 0.001 0.006" pos="0 0.012 0.006" material="hs_mat" mass="0.003" contype="0" conaffinity="0" />
+      </body>
+
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="act_joint1" joint="joint1" ctrlrange="-87 87" />
+    <motor name="act_joint2" joint="joint2" ctrlrange="-87 87" />
+    <motor name="act_joint3" joint="joint3" ctrlrange="-87 87" />
+    <motor name="act_joint4" joint="joint4" ctrlrange="-87 87" />
+    <motor name="act_joint5" joint="joint5" ctrlrange="-12 12" />
+    <motor name="act_joint6" joint="joint6" ctrlrange="-12 12" />
+    <motor name="act_joint7" joint="joint7" ctrlrange="-12 12" />
+    <motor name="act_finger_left" joint="finger_left" ctrlrange="0 0.04" />
+    <motor name="act_finger_right" joint="finger_right" ctrlrange="0 0.04" />
+  </actuator>
+
+  <sensor>
+    <jointpos name="joint1_pos" joint="joint1" />
+    <jointpos name="joint2_pos" joint="joint2" />
+    <jointpos name="joint3_pos" joint="joint3" />
+    <jointpos name="joint4_pos" joint="joint4" />
+    <jointpos name="joint5_pos" joint="joint5" />
+    <jointpos name="joint6_pos" joint="joint6" />
+    <jointpos name="joint7_pos" joint="joint7" />
+    <jointvel name="joint1_vel" joint="joint1" />
+    <jointvel name="joint2_vel" joint="joint2" />
+    <jointvel name="joint3_vel" joint="joint3" />
+    <jointvel name="joint4_vel" joint="joint4" />
+    <jointvel name="joint5_vel" joint="joint5" />
+    <jointvel name="joint6_vel" joint="joint6" />
+    <jointvel name="joint7_vel" joint="joint7" />
+    <touch name="left_finger_touch" site="ft_sensor" />
+  </sensor>
+</mujoco>

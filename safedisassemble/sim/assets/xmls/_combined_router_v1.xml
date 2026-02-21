@@ -1,0 +1,352 @@
+<mujoco model="disassembly_arm">
+  <compiler angle="radian" meshdir="../meshes/" />
+
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" />
+
+  <visual>
+    <global offwidth="2560" offheight="1440" />
+  </visual>
+
+  <default>
+    <joint damping="1.0" armature="0.1" />
+    <geom condim="4" friction="1.0 0.005 0.0001" />
+    <motor ctrllimited="true" />
+    <default class="robot">
+      <geom rgba="0.5 0.5 0.5 1" />
+    </default>
+    <default class="finger">
+      <geom rgba="0.3 0.3 0.3 1" friction="2.0 0.01 0.001" />
+    </default>
+    <default class="visual">
+      <geom contype="0" conaffinity="0" group="1" />
+    </default>
+  <default class="device_body">
+      <geom friction="0.8 0.005 0.001" />
+    </default>
+    <default class="snap_clip">
+      <geom friction="0.6 0.003 0.001" />
+      <joint stiffness="80" damping="8" />
+    </default>
+    <default class="connector">
+      <geom friction="1.2 0.01 0.001" />
+    </default>
+    <default class="screw">
+      <geom friction="0.3 0.001 0.0001" />
+      <joint damping="0.5" />
+    </default>
+  </default>
+
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.32 0.33 0.35" rgb2="0.36 0.37 0.39" width="512" height="512" />
+    <texture name="wood_tex" type="2d" builtin="gradient" rgb1="0.55 0.42 0.28" rgb2="0.48 0.36 0.22" width="256" height="256" />
+    <material name="grid_mat" texture="grid" texrepeat="10 10" reflectance="0.04" specular="0.15" shininess="0.3" />
+    <material name="robot_mat" rgba="0.72 0.72 0.74 1" specular="0.6" shininess="0.7" reflectance="0.08" />
+    <material name="workbench_mat" texture="wood_tex" texrepeat="3 2" specular="0.15" shininess="0.2" reflectance="0.03" />
+  <texture name="rtr_pcb_tex" type="2d" builtin="checker" rgb1="0.02 0.28 0.04" rgb2="0.01 0.20 0.03" width="128" height="128" />
+    <material name="rtr_plastic" rgba="0.10 0.10 0.12 1" specular="0.5" shininess="0.7" reflectance="0.08" />
+    <material name="rtr_top" rgba="0.88 0.88 0.92 1" specular="0.4" shininess="0.6" reflectance="0.06" />
+    <material name="rtr_inner" rgba="0.18 0.18 0.22 1" specular="0.2" />
+    <material name="rtr_pcb" texture="rtr_pcb_tex" texrepeat="3 2" specular="0.15" />
+    <material name="rtr_screw" rgba="0.75 0.75 0.78 1" specular="0.9" shininess="0.95" reflectance="0.3" />
+    <material name="rtr_gold" rgba="0.85 0.70 0.15 1" specular="0.7" shininess="0.8" />
+    <material name="rtr_chip" rgba="0.08 0.08 0.10 1" specular="0.5" shininess="0.6" />
+    <material name="rtr_shield" rgba="0.65 0.65 0.68 1" specular="0.6" shininess="0.7" reflectance="0.15" />
+    <material name="rtr_rubber" rgba="0.10 0.10 0.10 1" specular="0.04" />
+    <material name="rtr_led_green" rgba="0.1 0.9 0.1 1" specular="0.5" shininess="0.9" />
+    <material name="rtr_led_off" rgba="0.15 0.15 0.15 1" specular="0.3" />
+    <material name="rtr_port" rgba="0.25 0.25 0.30 1" specular="0.4" />
+    <material name="rtr_label" rgba="0.86 0.86 0.88 1" specular="0.1" />
+    <material name="rtr_conn_bk" rgba="0.04 0.04 0.04 1" specular="0.15" />
+    <material name="rtr_trace" rgba="0.55 0.48 0.10 1" specular="0.3" />
+    <material name="rtr_cap" rgba="0.12 0.12 0.25 1" specular="0.3" />
+    <material name="rtr_cmos" rgba="0.72 0.72 0.72 1" specular="0.6" />
+    <material name="rtr_ant_base" rgba="0.06 0.06 0.06 1" specular="0.15" />
+  </asset>
+
+  <worldbody>
+    
+    <geom name="floor" type="plane" size="1.5 1.5 0.01" material="grid_mat" />
+
+    
+    <body name="workbench" pos="0.5 0 0.4">
+      <geom name="table_top" type="box" size="0.4 0.3 0.02" material="workbench_mat" mass="50" contype="1" conaffinity="1" />
+      <geom name="leg1" type="cylinder" size="0.03 0.2" pos="-0.35 -0.25 -0.22" material="workbench_mat" mass="5" />
+      <geom name="leg2" type="cylinder" size="0.03 0.2" pos="0.35 -0.25 -0.22" material="workbench_mat" mass="5" />
+      <geom name="leg3" type="cylinder" size="0.03 0.2" pos="-0.35 0.25 -0.22" material="workbench_mat" mass="5" />
+      <geom name="leg4" type="cylinder" size="0.03 0.2" pos="0.35 0.25 -0.22" material="workbench_mat" mass="5" />
+    </body>
+
+    
+    <body name="base_link" pos="0 0 0.42" childclass="robot">
+      <geom type="cylinder" size="0.06 0.05" mass="2" />
+      <body name="link1" pos="0 0 0.05">
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+        <geom type="capsule" fromto="0 0 0 0 0 0.15" size="0.05" mass="3" />
+        <body name="link2" pos="0 0 0.15">
+          <joint name="joint2" type="hinge" axis="0 1 0" range="-1.7628 1.7628" />
+          <geom type="capsule" fromto="0 0 0 0 0 0.15" size="0.045" mass="2.5" />
+          <body name="link3" pos="0 0 0.15">
+            <joint name="joint3" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+            <geom type="capsule" fromto="0 0 0 0 0 0.12" size="0.04" mass="2" />
+            <body name="link4" pos="0 0 0.12">
+              <joint name="joint4" type="hinge" axis="0 -1 0" range="-3.0718 -0.0698" />
+              <geom type="capsule" fromto="0 0 0 0 0 0.12" size="0.035" mass="1.5" />
+              <body name="link5" pos="0 0 0.12">
+                <joint name="joint5" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+                <geom type="capsule" fromto="0 0 0 0 0 0.1" size="0.03" mass="1.2" />
+                <body name="link6" pos="0 0 0.1">
+                  <joint name="joint6" type="hinge" axis="0 1 0" range="-0.0175 3.7525" />
+                  <geom type="capsule" fromto="0 0 0 0 0 0.08" size="0.028" mass="1" />
+                  <body name="link7" pos="0 0 0.08">
+                    <joint name="joint7" type="hinge" axis="0 0 1" range="-2.8973 2.8973" />
+                    <geom type="cylinder" size="0.04 0.01" mass="0.5" />
+
+                    
+                    <body name="gripper_base" pos="0 0 0.02">
+                      <geom type="box" size="0.03 0.04 0.01" mass="0.3" />
+
+                      
+                      <body name="left_finger" pos="0 -0.02 0.02" childclass="finger">
+                        <joint name="finger_left" type="slide" axis="0 1 0" range="0 0.04" damping="10" stiffness="5" />
+                        <geom type="box" size="0.015 0.005 0.03" mass="0.05" />
+                        <geom name="left_fingertip" type="box" size="0.01 0.003 0.01" pos="0 0 0.04" mass="0.02" />
+                      </body>
+
+                      
+                      <body name="right_finger" pos="0 0.02 0.02" childclass="finger">
+                        <joint name="finger_right" type="slide" axis="0 -1 0" range="0 0.04" damping="10" stiffness="5" />
+                        <geom type="box" size="0.015 0.005 0.03" mass="0.05" />
+                        <geom name="right_fingertip" type="box" size="0.01 0.003 0.01" pos="0 0 0.04" mass="0.02" />
+                      </body>
+
+                      
+                      <site name="wrist_cam" pos="0 0 -0.01" euler="0 3.14159 0" type="box" size="0.01 0.01 0.01" rgba="0 0 1 0.3" />
+
+                      
+                      <site name="ee_site" pos="0 0 0.06" type="sphere" size="0.005" rgba="1 0 0 0.5" />
+
+                      
+                      <site name="ft_sensor" pos="0 0 0" type="sphere" size="0.003" rgba="0 1 0 0.3" />
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    
+    <body name="overhead_cam_mount" pos="0.5 0 1.2">
+      <site name="overhead_cam" type="box" size="0.02 0.02 0.02" rgba="0 0 1 0.3" />
+    </body>
+
+    
+    
+    <light name="key_light" pos="0.5 -0.3 1.4" dir="0 0.15 -1" diffuse="0.9 0.85 0.8" specular="0.5 0.5 0.5" cutoff="55" />
+    
+    <light name="fill_light" pos="-0.3 0.5 1.0" dir="0.3 -0.2 -0.8" diffuse="0.35 0.38 0.42" specular="0.1 0.1 0.1" cutoff="80" />
+    
+    <light name="rim_light" pos="0.5 0.5 1.3" dir="0 -0.4 -0.8" diffuse="0.25 0.25 0.3" specular="0.2 0.2 0.2" cutoff="70" />
+    
+    <light name="ambient" pos="0 0 2" diffuse="0.18 0.18 0.20" directional="true" />
+  <body name="router_base" pos="0.5 0 0.44">
+
+      
+      <geom name="bottom_shell" type="box" size="0.10 0.07 0.012" material="rtr_plastic" mass="0.12" />
+      
+      <geom name="rtr_rim_f" type="box" size="0.10 0.002 0.005" pos="0 -0.068 0.007" material="rtr_plastic" mass="0.01" />
+      <geom name="rtr_rim_b" type="box" size="0.10 0.002 0.005" pos="0 0.068 0.007" material="rtr_plastic" mass="0.01" />
+      <geom name="rtr_rim_l" type="box" size="0.002 0.07 0.005" pos="-0.098 0 0.007" material="rtr_plastic" mass="0.01" />
+      <geom name="rtr_rim_r" type="box" size="0.002 0.07 0.005" pos="0.098 0 0.007" material="rtr_plastic" mass="0.01" />
+
+      
+      <geom name="foot1" type="cylinder" size="0.006 0.002" pos="-0.082 -0.055 -0.014" material="rtr_rubber" mass="0.005" />
+      <geom name="foot2" type="cylinder" size="0.006 0.002" pos="0.082 -0.055 -0.014" material="rtr_rubber" mass="0.005" />
+      <geom name="foot3" type="cylinder" size="0.006 0.002" pos="-0.082 0.055 -0.014" material="rtr_rubber" mass="0.005" />
+      <geom name="foot4" type="cylinder" size="0.006 0.002" pos="0.082 0.055 -0.014" material="rtr_rubber" mass="0.005" />
+
+      
+      <geom name="eth1" type="box" size="0.006 0.005 0.005" pos="0.095 -0.04 0.000" material="rtr_port" mass="0.003" contype="0" conaffinity="0" />
+      <geom name="eth2" type="box" size="0.006 0.005 0.005" pos="0.095 -0.02 0.000" material="rtr_port" mass="0.003" contype="0" conaffinity="0" />
+      <geom name="eth3" type="box" size="0.006 0.005 0.005" pos="0.095 0.00 0.000" material="rtr_port" mass="0.003" contype="0" conaffinity="0" />
+      <geom name="eth4" type="box" size="0.006 0.005 0.005" pos="0.095 0.02 0.000" material="rtr_port" mass="0.003" contype="0" conaffinity="0" />
+      <geom name="wan_port" type="box" size="0.006 0.005 0.005" pos="0.095 0.045 0.000" rgba="0.20 0.25 0.50 1" mass="0.003" contype="0" conaffinity="0" />
+      <geom name="pwr_jack" type="cylinder" size="0.004 0.005" pos="0.095 -0.058 0.000" rgba="0.15 0.15 0.15 1" mass="0.002" contype="0" conaffinity="0" />
+
+      
+      <geom name="led1" type="box" size="0.002 0.002 0.001" pos="-0.04 -0.065 0.013" material="rtr_led_green" mass="0.0001" contype="0" conaffinity="0" />
+      <geom name="led2" type="box" size="0.002 0.002 0.001" pos="-0.02 -0.065 0.013" material="rtr_led_green" mass="0.0001" contype="0" conaffinity="0" />
+      <geom name="led3" type="box" size="0.002 0.002 0.001" pos="0.00 -0.065 0.013" material="rtr_led_off" mass="0.0001" contype="0" conaffinity="0" />
+      <geom name="led4" type="box" size="0.002 0.002 0.001" pos="0.02 -0.065 0.013" material="rtr_led_off" mass="0.0001" contype="0" conaffinity="0" />
+
+      
+      <geom name="rtr_label" type="box" size="0.05 0.03 0.0005" pos="0 0 -0.013" material="rtr_label" mass="0.002" contype="0" conaffinity="0" />
+
+      
+      <body name="top_cover" pos="0 0 0.012">
+        <joint name="cover_lift" type="slide" axis="0 0 1" range="0 0.08" stiffness="300" damping="30" />
+
+        <geom name="top_shell" type="box" size="0.098 0.068 0.008" material="rtr_top" mass="0.1" />
+        
+        <geom name="logo_indent" type="box" size="0.025 0.010 0.0005" pos="0 0 0.0085" rgba="0.80 0.80 0.84 1" mass="0.001" contype="0" conaffinity="0" />
+        
+        <geom name="rtr_vent1" type="box" size="0.04 0.001 0.0015" pos="0.03 0.04 0.009" material="rtr_inner" mass="0.0005" contype="0" conaffinity="0" />
+        <geom name="rtr_vent2" type="box" size="0.04 0.001 0.0015" pos="0.03 0.035 0.009" material="rtr_inner" mass="0.0005" contype="0" conaffinity="0" />
+        <geom name="rtr_vent3" type="box" size="0.04 0.001 0.0015" pos="0.03 0.030 0.009" material="rtr_inner" mass="0.0005" contype="0" conaffinity="0" />
+
+        
+        <body name="clip_front" pos="0 -0.068 -0.004" childclass="snap_clip">
+          <joint name="clip_front_j" type="slide" axis="0 -1 0" range="0 0.01" />
+          <geom name="clip_f_body" type="box" size="0.018 0.003 0.004" material="rtr_plastic" mass="0.002" />
+          <geom name="clip_f_tab" type="box" size="0.008 0.001 0.002" pos="0 -0.004 0" material="rtr_plastic" mass="0.001" contype="0" conaffinity="0" />
+          <site name="clip_front_site" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+
+        <body name="clip_back" pos="0 0.068 -0.004" childclass="snap_clip">
+          <joint name="clip_back_j" type="slide" axis="0 1 0" range="0 0.01" />
+          <geom name="clip_b_body" type="box" size="0.018 0.003 0.004" material="rtr_plastic" mass="0.002" />
+          <geom name="clip_b_tab" type="box" size="0.008 0.001 0.002" pos="0 0.004 0" material="rtr_plastic" mass="0.001" contype="0" conaffinity="0" />
+          <site name="clip_back_site" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+
+        <body name="clip_left" pos="-0.098 0 -0.004" childclass="snap_clip">
+          <joint name="clip_left_j" type="slide" axis="-1 0 0" range="0 0.01" />
+          <geom name="clip_l_body" type="box" size="0.003 0.018 0.004" material="rtr_plastic" mass="0.002" />
+          <geom name="clip_l_tab" type="box" size="0.001 0.008 0.002" pos="-0.004 0 0" material="rtr_plastic" mass="0.001" contype="0" conaffinity="0" />
+          <site name="clip_left_site" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+
+        <body name="clip_right" pos="0.098 0 -0.004" childclass="snap_clip">
+          <joint name="clip_right_j" type="slide" axis="1 0 0" range="0 0.01" />
+          <geom name="clip_r_body" type="box" size="0.003 0.018 0.004" material="rtr_plastic" mass="0.002" />
+          <geom name="clip_r_tab" type="box" size="0.001 0.008 0.002" pos="0.004 0 0" material="rtr_plastic" mass="0.001" contype="0" conaffinity="0" />
+          <site name="clip_right_site" type="sphere" size="0.004" rgba="0 0 0 0" />
+        </body>
+
+        
+        <body name="hidden_screw_1" pos="-0.04 0 0.009" childclass="screw">
+          <joint name="hscrew_1_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="hscrew_1_slide" type="slide" axis="0 0 1" range="0 0.012" stiffness="80" damping="4" />
+          <geom name="hs1_head" type="cylinder" size="0.003 0.0015" material="rtr_screw" mass="0.001" />
+          <geom name="hs1_xa" type="box" size="0.0018 0.0003 0.0005" pos="0 0 0.002" material="rtr_inner" mass="0.00005" contype="0" conaffinity="0" />
+          <geom name="hs1_xb" type="box" size="0.0003 0.0018 0.0005" pos="0 0 0.002" material="rtr_inner" mass="0.00005" contype="0" conaffinity="0" />
+          <geom name="hs1_shaft" type="cylinder" size="0.001 0.004" pos="0 0 -0.003" material="rtr_screw" mass="0.0005" />
+          <site name="hscrew_1_site" type="sphere" size="0.003" rgba="0 0 0 0" />
+        </body>
+
+        <body name="hidden_screw_2" pos="0.04 0 0.009" childclass="screw">
+          <joint name="hscrew_2_turn" type="hinge" axis="0 0 1" range="0 31.4159" stiffness="2.0" damping="0.3" />
+          <joint name="hscrew_2_slide" type="slide" axis="0 0 1" range="0 0.012" stiffness="80" damping="4" />
+          <geom name="hs2_head" type="cylinder" size="0.003 0.0015" material="rtr_screw" mass="0.001" />
+          <geom name="hs2_xa" type="box" size="0.0018 0.0003 0.0005" pos="0 0 0.002" material="rtr_inner" mass="0.00005" contype="0" conaffinity="0" />
+          <geom name="hs2_xb" type="box" size="0.0003 0.0018 0.0005" pos="0 0 0.002" material="rtr_inner" mass="0.00005" contype="0" conaffinity="0" />
+          <geom name="hs2_shaft" type="cylinder" size="0.001 0.004" pos="0 0 -0.003" material="rtr_screw" mass="0.0005" />
+          <site name="hscrew_2_site" type="sphere" size="0.003" rgba="0 0 0 0" />
+        </body>
+      </body>
+
+      
+      <body name="router_pcb" pos="0 0 0">
+        <geom name="router_board" type="box" size="0.085 0.055 0.001" material="rtr_pcb" mass="0.08" />
+        <site name="router_pcb_center" type="sphere" size="0.003" rgba="0 0 0 0" />
+
+        
+        <geom name="processor_pad" type="box" size="0.013 0.013 0.001" pos="0 0 0.002" material="rtr_chip" mass="0.01" contype="0" conaffinity="0" />
+        <geom name="processor_hs" type="box" size="0.012 0.012 0.004" pos="0 0 0.005" material="rtr_shield" mass="0.02" />
+
+        
+        <geom name="wifi_chip" type="box" size="0.008 0.008 0.001" pos="0.04 0.02 0.002" material="rtr_chip" mass="0.005" contype="0" conaffinity="0" />
+        <geom name="wifi_shield" type="box" size="0.010 0.010 0.003" pos="0.04 0.02 0.004" material="rtr_shield" mass="0.008" />
+
+        
+        <geom name="flash_chip" type="box" size="0.005 0.005 0.0008" pos="-0.04 -0.02 0.002" material="rtr_chip" mass="0.003" contype="0" conaffinity="0" />
+
+        
+        <geom name="rtr_ram" type="box" size="0.006 0.004 0.0008" pos="0.03 -0.03 0.002" material="rtr_chip" mass="0.003" contype="0" conaffinity="0" />
+
+        
+        <geom name="cap1" type="cylinder" size="0.002 0.003" pos="-0.06 0.03 0.004" material="rtr_cap" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="cap2" type="cylinder" size="0.002 0.003" pos="-0.06 0.02 0.004" material="rtr_cap" mass="0.001" contype="0" conaffinity="0" />
+        <geom name="cap3" type="cylinder" size="0.0015 0.002" pos="-0.06 0.01 0.003" material="rtr_cap" mass="0.0005" contype="0" conaffinity="0" />
+
+        
+        <geom name="rtr_tr1" type="box" size="0.0003 0.035 0.0002" pos="0.015 0 0.001" material="rtr_trace" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="rtr_tr2" type="box" size="0.035 0.0003 0.0002" pos="0 -0.01 0.001" material="rtr_trace" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="rtr_tr3" type="box" size="0.0003 0.025 0.0002" pos="-0.03 0.01 0.001" material="rtr_trace" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="rtr_tr4" type="box" size="0.02 0.0003 0.0002" pos="0.02 0.02 0.001" material="rtr_trace" mass="0.0001" contype="0" conaffinity="0" />
+
+        
+        <geom name="rtr_smd1" type="box" size="0.015 0.001 0.0005" pos="0.05 -0.04 0.001" rgba="0.06 0.06 0.06 1" mass="0.0005" contype="0" conaffinity="0" />
+        <geom name="rtr_smd2" type="box" size="0.010 0.001 0.0005" pos="-0.05 -0.04 0.001" rgba="0.06 0.06 0.06 1" mass="0.0005" contype="0" conaffinity="0" />
+
+        
+        <body name="antenna_conn_1" pos="-0.085 0.03 0.002">
+          <joint name="ant_conn_1" type="hinge" axis="0 0 1" range="0 6.28" stiffness="1.0" damping="0.2" />
+          <geom name="ant1_base" type="cylinder" size="0.005 0.003" material="rtr_ant_base" mass="0.003" />
+          <geom name="ant1_pin" type="cylinder" size="0.001 0.006" pos="0 0 0.005" material="rtr_gold" mass="0.001" />
+          <geom name="ant1_ring" type="cylinder" size="0.004 0.001" pos="0 0 0.008" material="rtr_gold" mass="0.001" contype="0" conaffinity="0" />
+          <site name="ant_conn_1_site" type="sphere" size="0.005" rgba="0 0 0 0" />
+        </body>
+
+        
+        <body name="antenna_conn_2" pos="-0.085 -0.03 0.002">
+          <joint name="ant_conn_2" type="hinge" axis="0 0 1" range="0 6.28" stiffness="1.0" damping="0.2" />
+          <geom name="ant2_base" type="cylinder" size="0.005 0.003" material="rtr_ant_base" mass="0.003" />
+          <geom name="ant2_pin" type="cylinder" size="0.001 0.006" pos="0 0 0.005" material="rtr_gold" mass="0.001" />
+          <geom name="ant2_ring" type="cylinder" size="0.004 0.001" pos="0 0 0.008" material="rtr_gold" mass="0.001" contype="0" conaffinity="0" />
+          <site name="ant_conn_2_site" type="sphere" size="0.005" rgba="0 0 0 0" />
+        </body>
+      </body>
+
+      
+      <body name="cmos_battery" pos="0.05 0.03 0.002">
+        <joint name="cmos_batt_conn" type="slide" axis="0 0 1" range="0 0.01" stiffness="50" damping="3" />
+        <geom name="coin_cell" type="cylinder" size="0.010 0.002" material="rtr_cmos" mass="0.003" />
+        <geom name="cmos_plus" type="box" size="0.004 0.001 0.0003" pos="0 0 0.0025" rgba="0.50 0.50 0.50 1" mass="0.0001" contype="0" conaffinity="0" />
+        <geom name="cmos_lbl" type="box" size="0.005 0.003 0.0003" pos="0 -0.003 0.0025" material="rtr_label" mass="0.0001" contype="0" conaffinity="0" />
+        <site name="cmos_battery_zone" type="cylinder" size="0.01 0.002" rgba="0 0 0 0" />
+        <site name="cmos_battery_site" type="sphere" size="0.004" rgba="0 0 0 0" />
+      </body>
+
+      
+      <body name="eth_shield" pos="0.070 0 0.003">
+        <geom name="shield_top" type="box" size="0.015 0.035 0.001" material="rtr_shield" mass="0.008" />
+        <geom name="shield_wall_f" type="box" size="0.015 0.001 0.005" pos="0 -0.034 -0.004" material="rtr_shield" mass="0.002" contype="0" conaffinity="0" />
+        <geom name="shield_wall_b" type="box" size="0.015 0.001 0.005" pos="0 0.034 -0.004" material="rtr_shield" mass="0.002" contype="0" conaffinity="0" />
+        <geom name="shield_wall_l" type="box" size="0.001 0.035 0.005" pos="-0.014 0 -0.004" material="rtr_shield" mass="0.002" contype="0" conaffinity="0" />
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="act_joint1" joint="joint1" ctrlrange="-87 87" />
+    <motor name="act_joint2" joint="joint2" ctrlrange="-87 87" />
+    <motor name="act_joint3" joint="joint3" ctrlrange="-87 87" />
+    <motor name="act_joint4" joint="joint4" ctrlrange="-87 87" />
+    <motor name="act_joint5" joint="joint5" ctrlrange="-12 12" />
+    <motor name="act_joint6" joint="joint6" ctrlrange="-12 12" />
+    <motor name="act_joint7" joint="joint7" ctrlrange="-12 12" />
+    <motor name="act_finger_left" joint="finger_left" ctrlrange="0 0.04" />
+    <motor name="act_finger_right" joint="finger_right" ctrlrange="0 0.04" />
+  </actuator>
+
+  <sensor>
+    <jointpos name="joint1_pos" joint="joint1" />
+    <jointpos name="joint2_pos" joint="joint2" />
+    <jointpos name="joint3_pos" joint="joint3" />
+    <jointpos name="joint4_pos" joint="joint4" />
+    <jointpos name="joint5_pos" joint="joint5" />
+    <jointpos name="joint6_pos" joint="joint6" />
+    <jointpos name="joint7_pos" joint="joint7" />
+    <jointvel name="joint1_vel" joint="joint1" />
+    <jointvel name="joint2_vel" joint="joint2" />
+    <jointvel name="joint3_vel" joint="joint3" />
+    <jointvel name="joint4_vel" joint="joint4" />
+    <jointvel name="joint5_vel" joint="joint5" />
+    <jointvel name="joint6_vel" joint="joint6" />
+    <jointvel name="joint7_vel" joint="joint7" />
+    <touch name="left_finger_touch" site="ft_sensor" />
+  </sensor>
+</mujoco>
