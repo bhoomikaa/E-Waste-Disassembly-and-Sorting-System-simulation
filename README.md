@@ -218,5 +218,4 @@ ML Project/
 │  ├─ configs/                      # Settings (training/eval knobs)
 │  └─ tests/                        # Checks that nothing is broken
 └─ README.md
----
 
