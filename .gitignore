@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Data & outputs (large files, not tracked)
+data/trajectories/*.h5
+data/trajectories/*.hdf5
+outputs/
+results/
+wandb/
+logs/
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+!configs/*.yaml
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_metadata
+
+# MuJoCo compiled
+*.mjb
+
+# Rendered videos & frames
+renders/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# OS
+Thumbs.db
+.DS_Store
