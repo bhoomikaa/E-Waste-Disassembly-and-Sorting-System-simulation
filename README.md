@@ -21,34 +21,15 @@ SafeDisassemble is built like a three-level “organization”:
 A **Safety Module** validates the plan and continuously monitors forces near sensitive zones (battery and PCB) to pause/abort if risk rises.
 
 ---
-## Repo Structure
-
-```text
-ML Project/
-├─ safedisassemble/                 # The brain of the project
-│  ├─ models/                       # The AI that makes decisions
-│  │  ├─ task_planner/              # Level 1: "What should I do?"
-│  │  ├─ skill_selector/            # Level 2: "How should I do it?"
-│  │  └─ motor_policy/              # Level 3: "Move my hand exactly like this"
-│  ├─ sim/                          # The virtual world
-│  │  ├─ envs/                      # The rules of the world (Gymnasium env)
-│  │  └─ assets/xmls/               # 3D MJCF/XML models (devices, robot, table)
-│  ├─ data/                         # Collect/generate training examples
-│  ├─ safety/                       # Safety guard (plan checks + force monitor)
-│  ├─ scripts/                      # Tools to run demos and render videos
-│  ├─ configs/                      # Settings (training/eval knobs)
-│  └─ tests/                        # Checks that nothing is broken
-└─ README.md
-
----
-
 
 ## Part 1 — The Virtual World (Simulation)
 
 ### Physics Engine: MuJoCo
+
 We use **MuJoCo** for realistic rigid-body dynamics, collisions, friction, and contacts—so actions like unscrewing, pulling a battery, or lifting a module behave physically.
 
 ### Devices (MJCF / XML models)
+
 Devices are described in MJCF/XML “blueprints” with detailed geometry and materials.
 
 - **Laptop**
@@ -65,6 +46,7 @@ Devices are described in MJCF/XML “blueprints” with detailed geometry and ma
   - PCB, antenna connectors, CMOS coin cell
 
 ### Environment: `disassembly_env.py` (Gymnasium)
+
 The environment is implemented using **Gymnasium**, so an agent can `reset()` and `step()` like standard RL tasks.
 
 **Observations**
@@ -81,6 +63,7 @@ The environment is implemented using **Gymnasium**, so an agent can `reset()` an
 - Jacobian-based end-effector control + PD stabilization.
 
 ### Visual “removal” animation
+
 A joint-map (e.g., `_REMOVAL_JOINT_MAP`) defines how each component is removed:
 - screws: rotate ~5 turns + lift out
 - panel: slide upward
@@ -94,6 +77,7 @@ Removals animate smoothly (cubic easing) for realistic demos.
 ## Part 2 — The AI Brains (Models)
 
 ### Level 1: Task Planner (`task_planner/`)
+
 - Takes device perception + instruction (e.g., “Disassemble this laptop”)
 - Uses a vision-language approach (template retrieval + adaptation)
 - Enforces the dependency graph via topological sorting
@@ -107,6 +91,7 @@ Removals animate smoothly (cubic easing) for realistic demos.
 - `lift_component -> ram_module`
 
 ### Level 2: Skill Selector (`skill_selector/`)
+
 For each plan step, predicts:
 - **Skill ID** (one of several manipulation primitives)
 - Continuous parameters: target position, approach direction, max force, gripper width, rotation angle, confidence, etc.
@@ -116,7 +101,8 @@ Training uses:
 - regression loss (parameters)
 
 ### Level 3: Motor Policy (`motor_policy/`)
-We use a **Diffusion Policy** (conditional 1D U-Net) to generate motion trajectories.
+
+We use a **Diffusion Policy** (conditional 1D U-Net) to generate motion trajectories.  
 Diffusion is useful because many manipulation tasks have **multiple valid trajectories** (multi-modal behavior), and diffusion avoids producing an “averaged” invalid motion.
 
 ---
@@ -126,12 +112,14 @@ Diffusion is useful because many manipulation tasks have **multiple valid trajec
 Safety is the core objective.
 
 ### Layer 1: Plan Validation
+
 Before executing:
 - verify dependency rules
 - ensure battery is prioritized appropriately
 - block/replan if a step is unsafe or inaccessible
 
 ### Layer 2: Real-Time Force Monitoring
+
 At every control step:
 - monitor proximity to safety zones (battery / PCB)
 - smooth force readings
@@ -141,7 +129,8 @@ At every control step:
   - CRITICAL aborts and pauses
 
 ### Layer 3: Controller State Machine
-System states:
+
+System states:  
 `IDLE → PLANNING → EXECUTING → SAFETY_PAUSE/REPLANNING → COMPLETE/FAILED`
 
 All safety events are logged.
@@ -195,7 +184,7 @@ Generates a documentary-style demo video:
 - H.264 encoding (ffmpeg), fallback to OpenCV encoder if needed
 
 ---
-## Tech-Stack
+## Tech Stack
 
 | Area               | Technology                  | Why                                     |
 | ------------------ | --------------------------- | --------------------------------------- |
@@ -209,4 +198,25 @@ Generates a documentary-style demo video:
 | Video rendering    | MuJoCo renderer + ffmpeg    | High-quality demos                      |
 | Language           | Python 3.11                 | ML/robotics ecosystem                   |
 
+-----
+
+## Repo Structure
+
+```text
+ML Project/
+├─ safedisassemble/                 # The brain of the project
+│  ├─ models/                       # The AI that makes decisions
+│  │  ├─ task_planner/              # Level 1: "What should I do?"
+│  │  ├─ skill_selector/            # Level 2: "How should I do it?"
+│  │  └─ motor_policy/              # Level 3: "Move my hand exactly like this"
+│  ├─ sim/                          # The virtual world
+│  │  ├─ envs/                      # The rules of the world (Gymnasium env)
+│  │  └─ assets/xmls/               # 3D MJCF/XML models (devices, robot, table)
+│  ├─ data/                         # Collect/generate training examples
+│  ├─ safety/                       # Safety guard (plan checks + force monitor)
+│  ├─ scripts/                      # Tools to run demos and render videos
+│  ├─ configs/                      # Settings (training/eval knobs)
+│  └─ tests/                        # Checks that nothing is broken
+└─ README.md
+---
 
