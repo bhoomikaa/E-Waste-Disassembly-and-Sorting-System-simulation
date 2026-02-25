@@ -1,6 +1,6 @@
 # SafeDisassemble: E-Waste Disassembly & Sorting (Simulation + AI + Safety)
 
-**One sentence:** SafeDisassemble is a virtual robot system that sees an electronic device (e.g., a laptop), identifies its components, plans a safe disassembly order, and removes each part in simulation—**especially avoiding dangerous battery damage**.
+SafeDisassemble is a virtual robot system that sees an electronic device (e.g., a laptop), identifies its components, plans a safe disassembly order, and removes each part in simulation—**especially avoiding dangerous battery damage**.
 
 ---
 
